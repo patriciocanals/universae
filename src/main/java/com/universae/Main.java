@@ -6,11 +6,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import java.sql.Connection;
 
 public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
-        Label label = new Label("Bienvenido a MediTrack");
+        Connection conn = Database.connect();
+        String dbMessage = (conn != null) ? "Base de datos conectada" : "Error en la base de datos";
+
+        Label label = new Label("Bienvenido a MediTrack\n" + dbMessage);
         Button button = new Button("Iniciar");
         button.setOnAction(e -> label.setText("¡Botón pulsado!"));
 
