@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
 
 <VBox alignment="CENTER" spacing="10" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.universae.MedicationsController">
@@ -23,6 +24,11 @@
             <TableColumn text="Nombre" fx:id="nameColumn"/>
             <TableColumn text="Dosis" fx:id="doseColumn"/>
             <TableColumn text="Horario" fx:id="scheduleColumn"/>
+            <TableColumn text="Tomado" fx:id="takenColumn">
+                <cellValueFactory>
+                    <PropertyValueFactory property="taken"/>
+                </cellValueFactory>
+            </TableColumn>
         </columns>
     </TableView>
     <Label fx:id="errorLabel" text="" style="-fx-text-fill: red;"/>

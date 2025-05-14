@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,9 +21,16 @@ public class MedicationsController {
     @FXML private TableColumn<Medication, String> nameColumn;
     @FXML private TableColumn<Medication, String> doseColumn;
     @FXML private TableColumn<Medication, String> scheduleColumn;
+    @FXML private TableColumn<Medication, Boolean> takenColumn;
     @FXML private Label errorLabel;
 
     private ObservableList<Medication> medications = FXCollections.observableArrayList();
+    private int userId;
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+        loadMedications();
+    }
 
     @FXML
     private void initialize() {
@@ -30,24 +38,36 @@ public class MedicationsController {
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         doseColumn.setCellValueFactory(cellData -> cellData.getValue().doseProperty());
         scheduleColumn.setCellValueFactory(cellData -> cellData.getValue().scheduleProperty());
+        takenColumn.setCellValueFactory(cellData -> cellData.getValue().takenProperty());
+        takenColumn.setCellFactory(CheckBoxTableCell.forTableColumn(takenColumn));
+        takenColumn.setEditable(true);
+        medicationsTable.setEditable(true);
         medicationsTable.setItems(medications);
-        loadMedications();
+
+        // Update database when taken status changes
+        takenColumn.setOnEditCommit(event -> {
+            Medication med = event.getRowValue();
+            med.setTaken(event.getNewValue());
+            updateTakenStatus(med);
+        });
     }
 
     private void loadMedications() {
-        String sql = "SELECT name, dose, schedule FROM medications";
+        String sql = "SELECT id, name, dose, schedule, taken FROM medications WHERE user_id = ?";
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
             medications.clear();
             while (rs.next()) {
                 medications.add(new Medication(
                     rs.getString("name"),
                     rs.getString("dose"),
-                    rs.getString("schedule")
+                    rs.getString("schedule"),
+                    rs.getBoolean("taken")
                 ));
             }
-            System.out.println("Loaded " + medications.size() + " medications");
+            System.out.println("Loaded " + medications.size() + " medications for userId: " + userId);
         } catch (SQLException e) {
             errorLabel.setText("Error al cargar medicamentos: " + e.getMessage());
             System.out.println("Error loading medications: " + e.getMessage());
@@ -64,21 +84,36 @@ public class MedicationsController {
             return;
         }
 
-        String sql = "INSERT INTO medications (name, dose, schedule, taken) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO medications (user_id, name, dose, schedule, taken) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = Database.connect();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, name);
-            pstmt.setString(2, dose);
-            pstmt.setString(3, schedule);
-            pstmt.setBoolean(4, false);
+            pstmt.setInt(1, userId);
+            pstmt.setString(2, name);
+            pstmt.setString(3, dose);
+            pstmt.setString(4, schedule);
+            pstmt.setBoolean(5, false);
             pstmt.executeUpdate();
-            medications.add(new Medication(name, dose, schedule));
+            medications.add(new Medication(name, dose, schedule, false));
             nameField.clear();
             doseField.clear();
             scheduleField.clear();
             errorLabel.setText("Medicamento añadido");
         } catch (SQLException e) {
             errorLabel.setText("Error: " + e.getMessage());
+        }
+    }
+
+    private void updateTakenStatus(Medication medication) {
+        String sql = "UPDATE medications SET taken = ? WHERE name = ? AND user_id = ?";
+        try (Connection conn = Database.connect();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setBoolean(1, medication.isTaken());
+            pstmt.setString(2, medication.getName());
+            pstmt.setInt(3, userId);
+            pstmt.executeUpdate();
+            errorLabel.setText("Estado actualizado");
+        } catch (SQLException e) {
+            errorLabel.setText("Error al actualizar estado: " + e.getMessage());
         }
     }
 }
