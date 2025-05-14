@@ -19,6 +19,7 @@
     <TextField fx:id="doseField" promptText="Dosis (ej. 1 pastilla)"/>
     <TextField fx:id="scheduleField" promptText="Horario (ej. 08:00)"/>
     <Button text="Añadir Medicamento" onAction="#addMedication"/>
+    <Button text="Cerrar Sesión" onAction="#logout"/>
     <TableView fx:id="medicationsTable">
         <columns>
             <TableColumn text="Nombre" fx:id="nameColumn"/>

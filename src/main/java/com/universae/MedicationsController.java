@@ -3,11 +3,14 @@ package com.universae;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.stage.Stage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -44,7 +47,6 @@ public class MedicationsController {
         medicationsTable.setEditable(true);
         medicationsTable.setItems(medications);
 
-        // Update database when taken status changes
         takenColumn.setOnEditCommit(event -> {
             Medication med = event.getRowValue();
             med.setTaken(event.getNewValue());
@@ -114,6 +116,22 @@ public class MedicationsController {
             errorLabel.setText("Estado actualizado");
         } catch (SQLException e) {
             errorLabel.setText("Error al actualizar estado: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void logout() {
+        try {
+            System.out.println("Logging out, loading Login.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/universae/Login.fxml"));
+            Scene scene = new Scene(loader.load(), 300, 400);
+            Stage stage = (Stage) nameField.getScene().getWindow();
+            stage.setTitle("MediTrack - Iniciar Sesión");
+            stage.setScene(scene);
+            System.out.println("Login screen loaded successfully");
+        } catch (Exception e) {
+            System.out.println("Error loading Login.fxml: " + e.getMessage());
+            errorLabel.setText("Error al cerrar sesión: " + e.getMessage());
         }
     }
 }
