@@ -9,25 +9,28 @@ import javafx.scene.control.PasswordField;
 import javafx.stage.Stage;
 
 public class LoginController {
-    @FXML private TextField usernameField;
-    @FXML private PasswordField passwordField;
-    @FXML private Label errorLabel;
+    @FXML
+    private TextField usernameField;
+    @FXML
+    private PasswordField passwordField;
+    @FXML
+    private Label errorLabel;
 
     @FXML
     private void login() {
         String username = usernameField.getText();
         String password = passwordField.getText();
         if (username.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Por favor, completa todos los campos");
+            errorLabel.setText("Todos los campos deben ser obligatorios.");
         } else {
             int userId = User.login(username, password);
             if (userId > 0) {
                 try {
-                    System.out.println("Attempting to load Medications.fxml");
+                    System.out.println("intento de carga de la pantalla de medicamento");
                     FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/universae/Medications.fxml"));
                     if (loader.getLocation() == null) {
-                        System.out.println("Error: Medications.fxml not found");
-                        errorLabel.setText("Error: No se encontró la pantalla de medicamentos");
+                        System.out.println("no se enconto");
+                        errorLabel.setText("no esta lapantalla de medicamento");
                         return;
                     }
                     Scene scene = new Scene(loader.load(), 600, 400);
@@ -36,14 +39,14 @@ public class LoginController {
                     Stage stage = (Stage) usernameField.getScene().getWindow();
                     stage.setTitle("MediTrack - Gestión de Medicamentos");
                     stage.setScene(scene);
-                    System.out.println("Medications screen loaded successfully");
+                    System.out.println("cargado el loaded");
                 } catch (Exception e) {
-                    System.out.println("Error loading Medications.fxml: " + e.getMessage());
+                    System.out.println("error en el loading " + e.getMessage());
                     e.printStackTrace();
-                    errorLabel.setText("Error al cargar la pantalla de medicamentos: " + e.getMessage());
+                    errorLabel.setText("error en la pantalla de medicamwentos: " + e.getMessage());
                 }
             } else {
-                errorLabel.setText("Usuario o contraseña incorrectos");
+                errorLabel.setText("User o Pass incorrectos");
             }
         }
     }
@@ -53,11 +56,11 @@ public class LoginController {
         String username = usernameField.getText();
         String password = passwordField.getText();
         if (username.isEmpty() || password.isEmpty()) {
-            errorLabel.setText("Por favor, completa todos los campos");
+            errorLabel.setText("Todos los campos obligatorios.");
         } else if (User.register(username, password)) {
             errorLabel.setText("Registro exitoso");
         } else {
-            errorLabel.setText("Error: usuario ya existe o fallo en la base de datos");
+            errorLabel.setText("Usuario ya creado en la base de dato");
         }
     }
 }

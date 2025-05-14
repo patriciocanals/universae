@@ -17,15 +17,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class MedicationsController {
-    @FXML private TextField nameField;
-    @FXML private TextField doseField;
-    @FXML private TextField scheduleField;
-    @FXML private TableView<Medication> medicationsTable;
-    @FXML private TableColumn<Medication, String> nameColumn;
-    @FXML private TableColumn<Medication, String> doseColumn;
-    @FXML private TableColumn<Medication, String> scheduleColumn;
-    @FXML private TableColumn<Medication, Boolean> takenColumn;
-    @FXML private Label errorLabel;
+    @FXML
+    private TextField nameField;
+    @FXML
+    private TextField doseField;
+    @FXML
+    private TextField scheduleField;
+    @FXML
+    private TableView<Medication> medicationsTable;
+    @FXML
+    private TableColumn<Medication, String> nameColumn;
+    @FXML
+    private TableColumn<Medication, String> doseColumn;
+    @FXML
+    private TableColumn<Medication, String> scheduleColumn;
+    @FXML
+    private TableColumn<Medication, Boolean> takenColumn;
+    @FXML
+    private Label errorLabel;
 
     private ObservableList<Medication> medications = FXCollections.observableArrayList();
     private int userId;
@@ -37,7 +46,7 @@ public class MedicationsController {
 
     @FXML
     private void initialize() {
-        System.out.println("Initializing MedicationsController");
+        System.out.println("iniciando el controladr de medicamentos");
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
         doseColumn.setCellValueFactory(cellData -> cellData.getValue().doseProperty());
         scheduleColumn.setCellValueFactory(cellData -> cellData.getValue().scheduleProperty());
@@ -57,22 +66,21 @@ public class MedicationsController {
     private void loadMedications() {
         String sql = "SELECT id, name, dose, schedule, taken FROM medications WHERE user_id = ?";
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
             medications.clear();
             while (rs.next()) {
                 medications.add(new Medication(
-                    rs.getString("name"),
-                    rs.getString("dose"),
-                    rs.getString("schedule"),
-                    rs.getBoolean("taken")
-                ));
+                        rs.getString("name"),
+                        rs.getString("dose"),
+                        rs.getString("schedule"),
+                        rs.getBoolean("taken")));
             }
-            System.out.println("Loaded " + medications.size() + " medications for userId: " + userId);
+            System.out.println("cargado " + medications.size() + " medicationes para: " + userId);
         } catch (SQLException e) {
             errorLabel.setText("Error al cargar medicamentos: " + e.getMessage());
-            System.out.println("Error loading medications: " + e.getMessage());
+            System.out.println("Error al cargar medicamentos: " + e.getMessage());
         }
     }
 
@@ -82,13 +90,13 @@ public class MedicationsController {
         String dose = doseField.getText();
         String schedule = scheduleField.getText();
         if (name.isEmpty() || dose.isEmpty() || schedule.isEmpty()) {
-            errorLabel.setText("Por favor, completa todos los campos");
+            errorLabel.setText("Toodos los campos deben ser obligatorios.");
             return;
         }
 
         String sql = "INSERT INTO medications (user_id, name, dose, schedule, taken) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, userId);
             pstmt.setString(2, name);
             pstmt.setString(3, dose);
@@ -108,30 +116,30 @@ public class MedicationsController {
     private void updateTakenStatus(Medication medication) {
         String sql = "UPDATE medications SET taken = ? WHERE name = ? AND user_id = ?";
         try (Connection conn = Database.connect();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setBoolean(1, medication.isTaken());
             pstmt.setString(2, medication.getName());
             pstmt.setInt(3, userId);
             pstmt.executeUpdate();
-            errorLabel.setText("Estado actualizado");
+            errorLabel.setText("actualizado");
         } catch (SQLException e) {
-            errorLabel.setText("Error al actualizar estado: " + e.getMessage());
+            errorLabel.setText("Error al actualizar estado " + e.getMessage());
         }
     }
 
     @FXML
     private void logout() {
         try {
-            System.out.println("Logging out, loading Login.fxml");
+            System.out.println("desconectando, cargando Login.fxml");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/universae/Login.fxml"));
             Scene scene = new Scene(loader.load(), 300, 400);
             Stage stage = (Stage) nameField.getScene().getWindow();
-            stage.setTitle("MediTrack - Iniciar Sesión");
+            stage.setTitle("MediTrack - Iniciar Sesion");
             stage.setScene(scene);
-            System.out.println("Login screen loaded successfully");
+            System.out.println("el login se cargo bien");
         } catch (Exception e) {
-            System.out.println("Error loading Login.fxml: " + e.getMessage());
-            errorLabel.setText("Error al cerrar sesión: " + e.getMessage());
+            System.out.println("Error cargando Login.fxml: " + e.getMessage());
+            errorLabel.setText("Error al cerrar sesion: " + e.getMessage());
         }
     }
 }

@@ -16,16 +16,39 @@ public class Medication {
         this.taken = new SimpleBooleanProperty(taken);
     }
 
-    public String getName() { return name.get(); }
-    public SimpleStringProperty nameProperty() { return name; }
+    public String getName() {
+        return name.get();
+    }
 
-    public String getDose() { return dose.get(); }
-    public SimpleStringProperty doseProperty() { return dose; }
+    public SimpleStringProperty nameProperty() {
+        return name;
+    }
 
-    public String getSchedule() { return schedule.get(); }
-    public SimpleStringProperty scheduleProperty() { return schedule; }
+    public String getDose() {
+        return dose.get();
+    }
 
-    public boolean isTaken() { return taken.get(); }
-    public SimpleBooleanProperty takenProperty() { return taken; }
-    public void setTaken(boolean taken) { this.taken.set(taken); }
+    public SimpleStringProperty doseProperty() {
+        return dose;
+    }
+
+    public String getSchedule() {
+        return schedule.get();
+    }
+
+    public SimpleStringProperty scheduleProperty() {
+        return schedule;
+    }
+
+    public boolean isTaken() {
+        return taken.get();
+    }
+
+    public SimpleBooleanProperty takenProperty() {
+        return taken;
+    }
+
+    public void setTaken(boolean taken) {
+        this.taken.set(taken);
+    }
 }

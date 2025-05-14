@@ -10,7 +10,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/universae/Login.fxml"));
         Scene scene = new Scene(loader.load(), 300, 400);
-        primaryStage.setTitle("MediTrack - Iniciar Sesión");
+        primaryStage.setTitle("MediTrack - Iniciar Sesion");
         primaryStage.setScene(scene);
         primaryStage.show();
     }

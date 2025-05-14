@@ -10,9 +10,9 @@ public class Database {
         Connection conn = null;
         try {
             conn = DriverManager.getConnection(url);
-            System.out.println("Conexión a SQLite exitosa");
+            System.out.println("conn a sqlite exitosa");
         } catch (SQLException e) {
-            System.out.println("Error: " + e.getMessage());
+            System.out.println("error " + e.getMessage());
         }
         return conn;
     }

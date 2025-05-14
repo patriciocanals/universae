@@ -16,8 +16,8 @@
     </padding>
     <Label text="Gestión de Medicamentos"/>
     <TextField fx:id="nameField" promptText="Nombre del medicamento"/>
-    <TextField fx:id="doseField" promptText="Dosis (ej. 1 pastilla)"/>
-    <TextField fx:id="scheduleField" promptText="Horario (ej. 08:00)"/>
+    <TextField fx:id="doseField" promptText="Dosis"/>
+    <TextField fx:id="scheduleField" promptText="Horario"/>
     <Button text="Añadir Medicamento" onAction="#addMedication"/>
     <Button text="Cerrar Sesión" onAction="#logout"/>
     <TableView fx:id="medicationsTable">
